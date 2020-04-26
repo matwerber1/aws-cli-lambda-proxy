@@ -6,6 +6,13 @@ This project creates an [AWS Lambda layer](https://docs.aws.amazon.com/lambda/la
 
 The idea is that I want to create a "serverless AWS CLI" that I can embed into web apps. My vision is a static S3 website in which a user logs into a Cognito User Pool that is linked to a Cognito Identity Pool that allows the user to invoke this Lambda function. The web UI would have a text box skinned to look like a terminal and, when the user entered an AWS CLI command, it would then invoke the Lambda function with the same command as an input, receive results, and display them to the user. 
 
+## Credits
+
+The key steps needed to create a Lambda Layer containing the AWS CLI and the proxy function were adapted from:
+
+* https://alestic.com/2016/11/aws-lambda-awscli/
+* https://bezdelev.com/hacking/aws-cli-inside-lambda-layer-aws-s3-sync/
+
 ## Security
 
 Right now, the Lambda function will be able to invoke whatever CLI commands that are supported by the function's IAM role. In the future, I would like to adapt the function to instead also expect the invoke to provide temporary STS credentials (e.g. from the caller's identity pool) and assume that role so that it only executes commands within the context of the user. Either that, or build some sort of custom authorization scheme.
