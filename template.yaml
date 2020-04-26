@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  cognito-ui-tester
+
+  Globals:
+  Function:
+    Timeout: 600
+    MemorySize: 1024
+
+Resources:
+  AwsCliProxyFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambda/aws-cli-proxy
+      Layers:
+        - !Ref AwsCliLayer
+      Handler: app.lambda_handler
+      Runtime: python3.7
+      Policies:
+        - Version: '2012-10-17' # Policy Document
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:Get*
+                - s3:List*
+                - s3:Head*
+              Resource: 'arn:aws:s3:::*'
+
+  AwsCliLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+        LayerName: aws-cli-layer
+        Description: Contains AWS CLI for Python 3.7
+        ContentUri: lambda/aws-cli-layer/
+        CompatibleRuntimes:
+          - python3.7

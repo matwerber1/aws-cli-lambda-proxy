@@ -1,0 +1,9 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "aws-cli-lambda-proxy"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1g4700lhd3479"
+s3_prefix = "aws-cli-lambda-proxy"
+region = "us-west-2"
+capabilities = "CAPABILITY_IAM"
