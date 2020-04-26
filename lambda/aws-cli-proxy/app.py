@@ -18,4 +18,4 @@ def run_command(command):
     return True
 
 def lambda_handler(event, context):
-    run_command('/opt/aws ec2 describe-instances')
+    run_command('/opt/aws s3 ls')
