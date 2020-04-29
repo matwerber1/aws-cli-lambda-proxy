@@ -14,7 +14,7 @@ export PYTHON_VERSION=`python3 -c 'import sys; version=sys.version_info[:3]; pri
 export VIRTUAL_ENV_NAME="aws-cli-virtualenv"
 
 # Temporary directory for AWS CLI and its dependencies
-export LAMBDA_LAYER_DIR="lambda/awscli-layer"
+export LAMBDA_LAYER_DIR="lambda/aws-cli-layer"
 
 # Creates a directory for virtual environment
 mkdir -p ${LAMBDA_LAYER_DIR}
