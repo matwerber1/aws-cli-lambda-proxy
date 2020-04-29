@@ -42,7 +42,7 @@ def lambda_handler(event, context):
         
     else:
         commandResult = "Exception: not a valid AWS CLI command."
-        logger.error(response)
+        logger.error(commandResult)
     
     response = {
         "commandResult": commandResult
