@@ -1,5 +1,6 @@
 from __future__ import print_function
 import subprocess
+import os
 import logging
 import traceback
 import json
@@ -8,12 +9,19 @@ print('Loading function')
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-def run_command(command):
+def run_command(command, credentials):
+    
+    my_env = os.environ.copy()
+    my_env["AWS_ACCESS_KEY_ID"] = credentials['accessKeyId']
+    my_env["AWS_SECRET_ACCESS_KEY"] = credentials['secretAccessKey']
+    my_env["AWS_SESSION_TOKEN"] = credentials['sessionToken']
+    my_env["AWS_REGION"] = 'us-west-2'
+
     command_list = command.split(' ')
     response = None
     try:
         logger.info("Running shell command: \"{}\"".format(command))
-        result = subprocess.run(command_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT);
+        result = subprocess.run(command_list, env=my_env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT);
         response = result.stdout.decode('UTF-8')
         logger.info("Command output:\n------------------\n{}\n------------------".format(response))
     except Exception as e:
@@ -22,32 +30,20 @@ def run_command(command):
         logger.error(response)
     return response
 
-# At the moment, the Lambda will execute the passed command with whatever role
-# is attached to the Lambda function. The Cognito app is passiing the user's
-# identity pool temp STS credentials, I just don't know how to assume them
-# for the CLI. If we were doing everything in boto3, that would be easy...
-
 def lambda_handler(event, context):
 
-    print("Received event: \n" + json.dumps(event, indent=2))
+    # DO NOT PRINT EVENT, SINCE IT CONTAINS (TEMPORARY) COGNITO ACCESS KEYS FOR THE CALLING USER
+    # It would not be secure to have these stored in logs...
+    # Only used this for debugging...
+    # print("Received event: \n" + json.dumps(event, indent=2))
 
-    access_key = event['credentials']['accessKeyId']
-    secret_key = event['credentials']['secretAccessKey']
-    session_token = event['credentials']['sessionToken']
-    
-    #run_command('export AWS_ACCESS_KEY_ID={}'.format(access_key))
-    #run_command('export AWS_SECRET_ACCESS_KEY_ID={}'.format(secret_key))
-    #run_command('export AWS_SESSION_TOKEN={}'.format(session_token))
-
+    credentials = event['credentials'];
     commandToRun = event['commandToRun']
     commandArray = commandToRun.split(" ", 1)
- 
     commandResult = None
 
     if (commandArray[0] == 'aws'):
-        commandResult = run_command('/opt/aws {}'.format(commandArray[1]))
-        #final_command = '(AWS_ACCESS_KEY_ID={} && AWS_SECRET_ACCESS_KEY_ID={} && AWS_SESSION_TOKEN={} && /opt/aws {})'.format(access_key,secret_key,session_token,commandArray[1])
-        #commandResult = run_command(final_command)
+        commandResult = run_command('/opt/aws {}'.format(commandArray[1]), credentials)
     else:
         commandResult = "Exception: not a valid AWS CLI command."
         logger.error(commandResult)
