@@ -15,7 +15,7 @@ The key steps needed to create a Lambda Layer containing the AWS CLI and the pro
 
 ## Security
 
-Right now, the Lambda function will be able to invoke whatever CLI commands that are supported by the function's IAM role. In the future, I would like to adapt the function to instead also expect the invoke to provide temporary STS credentials (e.g. from the caller's identity pool) and assume that role so that it only executes commands within the context of the user. Either that, or build some sort of custom authorization scheme.
+The Lambda function expects the invocation to include STS credentials (presumably, from a Cognito Identity Pool). The function uses those credentials, rather than the role attached to the functioin, to execute permissions within the context of the caller. 
 
 ## Status
 
