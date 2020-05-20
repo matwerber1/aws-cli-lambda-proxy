@@ -35,3 +35,9 @@ Resources:
         ContentUri: lambda/aws-cli-layer/
         CompatibleRuntimes:
           - python3.7
+
+Outputs:
+  AwsCliProxyFunctionName:
+    Type: String
+    Value: !Ref AwsCliProxyFunction
+    Export: 
