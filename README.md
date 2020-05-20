@@ -17,12 +17,6 @@ The key steps needed to create a Lambda Layer containing the AWS CLI and the pro
 
 The Lambda function expects the invocation to include STS credentials (presumably, from a Cognito Identity Pool). The function uses those credentials, rather than the role attached to the functioin, to execute permissions within the context of the caller. 
 
-## Status
-
-I have a Lambda function successfully running a test AWS CLI command. 
-
-More work is needed to adapt the function to run whatever command it is passed in its invocation parameters, rather than a hard-coded parameter I sent it. 
-
 ## Deployment
 
 This project was built on MacOS using [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv). Not sure, but its possible the commands in `create-lambda-layer.sh` may need to be tweaked if you're using a different OS or using pyenv and virtualenv separately instead of the combined pyenv-virtualenv project. This project also requires the [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
